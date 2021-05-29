@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+   
+{% block content %}
+<div class="row">
+    <h1 class="text-center"><i class="fi-lightbulb" style = "color: orange;"></i></h1>
+</div>
+
+<div class="row">
+    <div class="grid-x grid-padding-x">
+        <div class="cell auto"></div>
+        <div class="cell medium-6">
+            <div class="card">
+                <div class="card-section">
+                    <form class="log-in-form" action = "/predict" method="POST">
+                        <h3 class="text-center">Welcome {{ user_name | upper }}</h3>
+                        <h4 class="text-center">Enter Iris Parameters</h4>
+                        <label>Sepal Length (cm)
+                            <input type="text" id="sepal_length" name="sepal_length" placeholder="Sepal Length (range from 4 to 8cm)">
+                        </label>
+                        <label>Sepal Width (cm)
+                            <input type="text" id="sepal_width" name="sepal_width" placeholder="Sepal Width (range from 2 to 4.4cm">
+                        </label>
+                        <label>Petal Length (cm)
+                            <input type="text" id="petal_length" name="petal_length" placeholder="Petal Length (range from 1 to 7cm)">
+                        </label>
+                        <label>Petal Width (cm)
+                            <input type="text" id="petal_width" name="petal_width" placeholder="Petal Width (range from 0 to 2.5cm)">
+                        </label>
+                        <p><input type="hidden" id="user_id" name="user_id" value="{{user_id}}"></input></p>
+                        <p><input type="hidden" id="user_name" name="user_name" value="{{user_name}}"></input></p>
+                        <p><input type="submit" id="predict" class="button expanded warning" value="Predict"></input></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="cell medium-4">
+            <img class="thumbnail" src="{{ url_for('static', filename='images/iris_sepal_petal.png') }}">
+        </div>
+        <div class="cell auto"></div>
+    </div>
+</div>
+
+
+<form action="/viewPreds.html" method="GET">
+    <input type="hidden" class="form-control" name="user_id" value="{{user_id}}">
+    <input type="hidden" class="form-control" name="user_name" value="{{user_name}}">
+    <input type="submit" id="predict-list" class="button expanded warning" value="View Prediction Results"></input>
+</form>
+<hr>
+
+<div class="row">
+    <div class="grid-x grid-padding-x">
+        <div class="cell auto"></div>
+        
+        <div class="cell medium-12">
+            <div id="preds">
+                <table class="hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Sepal Length (cm)</th>
+                        <th>Sepal Width (cm)</th>
+                        <th>Petal Length (cm)</th>
+                        <th>Petal Width (cm)</th>
+                        <th>Prediction</th>
+                        <th></th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pred in preds %}
+                    <tr>
+                        <td>{{ pred.pred_id }}</td>
+                        <td>{{ pred.sepal_length }}</td>
+                        <td>{{ pred.sepal_width }}</td>
+                        <td>{{ pred.petal_length }}</td>
+                        <td>{{ pred.petal_width }}</td>
+                        <td>{{ pred.prediction }}</td>
+                        <td>
+                            <form action="/deletePred?pred_id={{pred.pred_id}}&user_id={{user_id}}&user_name={{user_name}}" method="POST">
+                                <button type="submit" class="alert button">Remove</button>
+                            </form>
+                        </td>
+                        <td>{{ pred.insertion_date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="cell auto"></div>
+    </div>
+</div>
+
+{% endblock %}
+
